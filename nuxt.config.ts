@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: "https://www.alphavantage.co/query?",
-      apiKey: "TYCI8YM78PTQ1C9B", //Create your own at: https://www.alphavantage.co/support/#api-key
+      apiKey: "SecretKey", //Create your own at: https://www.alphavantage.co/support/#api-key
       isDemo: true,
     },
   },
