@@ -65,7 +65,9 @@
         <Graph
           :labels="timeseriesLabels || []"
           :data="timeseriesData || []"
+          v-if="!errorMessage"
         ></Graph>
+        <span v-else class="w-full h-full text-sm md:text-lg lg:text-xl text-red-800 font-medium text-center flex justify-center items-center p-5 lg:p-20">{{ errorMessage }}</span>
       </section>
       <!-- Radio Group -->
       <section class="p-3">
@@ -101,14 +103,21 @@
 </template>
 
 <script setup lang="ts">
-import type {RadioGroupValue } from "@nuxt/ui";
+import type { RadioGroupValue } from "@nuxt/ui";
 import { periodOptions } from "~/data/periodOptions";
 import { useForexApi } from "~/helpers/apiQueryHandler";
 
 import { getCurrencyIconFromCode } from "~/helpers/currencyIcons";
 import { getCurrencySymbolFromCode } from "~/helpers/currencySymbols";
 
-const { getHistoricalData, getExchangeRate, getHistoricalDataDemo, getExchangeRateDemo } = useForexApi()
+const {
+  getHistoricalData,
+  getExchangeRate,
+  getHistoricalDataDemo,
+  getExchangeRateDemo,
+} = useForexApi();
+
+const errorMessage = ref<string | null>();
 
 const props = defineProps<{
   exchangeTo?: string;
@@ -145,21 +154,18 @@ const historicalAPIResponse = ref();
 
 const runtimeConfig = useRuntimeConfig();
 
-watch(
-  [() => props.exchangeFrom, () => props.exchangeTo],
-  async () => {
-    if (props.exchangeFrom && props.exchangeTo) {
-      if (!runtimeConfig.public.isDemo) {
-        exchangeAPIResponse.value = await getExchangeRate({
-          fromSymbol: props.exchangeFrom,
-          toSymbol: props.exchangeTo,
-        });
-      } else {
-        exchangeAPIResponse.value = await getExchangeRateDemo();
-      }
+watch([() => props.exchangeFrom, () => props.exchangeTo], async () => {
+  if (props.exchangeFrom && props.exchangeTo) {
+    if (!runtimeConfig.public.isDemo) {
+      exchangeAPIResponse.value = await getExchangeRate({
+        fromSymbol: props.exchangeFrom,
+        toSymbol: props.exchangeTo,
+      });
+    } else {
+      exchangeAPIResponse.value = await getExchangeRateDemo();
     }
   }
-);
+});
 
 watch(
   [selectedPeriod, () => props.exchangeFrom, () => props.exchangeTo],
@@ -186,11 +192,16 @@ watch([exchangeAPIResponse], () => {
 
 watch([historicalAPIResponse], () => {
   const response = historicalAPIResponse.value;
+  errorMessage.value = null;
 
-  timeseriesLabels.value = response.timeseriesLabels;
-  timeseriesData.value = response.timeseriesData;
+  if (typeof response === "string") {
+    errorMessage.value = response.toString();
+  } else {
+    timeseriesLabels.value = response.timeseriesLabels;
+    timeseriesData.value = response.timeseriesData;
 
-  closeLatestValue.value = timeseriesData.value?.at(-1) || 0;
-  closeStartValue.value = timeseriesData.value?.at(0) || 0;
+    closeLatestValue.value = timeseriesData.value?.at(-1) || 0;
+    closeStartValue.value = timeseriesData.value?.at(0) || 0;
+  }
 });
 </script>
