@@ -190,7 +190,7 @@ watch([historicalAPIResponse], () => {
   timeseriesLabels.value = response.timeseriesLabels;
   timeseriesData.value = response.timeseriesData;
 
-  closeLatestValue.value = timeseriesData.value?.at(99) || 0;
+  closeLatestValue.value = timeseriesData.value?.at(-1) || 0;
   closeStartValue.value = timeseriesData.value?.at(0) || 0;
 });
 </script>
