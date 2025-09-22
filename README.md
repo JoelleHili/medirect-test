@@ -1,4 +1,4 @@
-# Nuxt Minimal Starter
+# MeDirect Interview Assignment
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -20,6 +20,16 @@ yarn install
 bun install
 ```
 
+### API Setup
+
+1. Create an API Key: https://www.alphavantage.co/support/#api-key
+
+2. Open nuxt.config.ts
+
+3. Input Generated API Key in apiKey
+
+4. Turn isDemo to false (isDemo is Required to test intradaily calls (15M and 1H) and when out of requests)
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
@@ -27,16 +37,6 @@ Start the development server on `http://localhost:3000`:
 ```bash
 # npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
 
 ## Production
 
@@ -46,30 +46,5 @@ Build the application for production:
 # npm
 npm run build
 
-# pnpm
-pnpm build
 
-# yarn
-yarn build
 
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
